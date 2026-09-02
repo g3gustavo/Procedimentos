@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exportar e Importar Máquinas Virtuais</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+<div class="container">
+  <!-- Retorno ao Menu -->
+  <a href="../index.html" class="nav-back">‹ Voltar aos procedimentos</a>
+
+  <header class="doc-header">
+    <h1>Exportar e Importar Máquinas Virtuais</h1>
+    <p>Procedimento padrão para exportar e importar máquinas sem corromper dados</p>
+  </header>
+
+  <main class="stepper">
+
+    <div class="step">
+      <h3>Pré-Requisitos</h3>
+      <span class="step-subtitle">Passos necessários para garantir a execução do procedimento</span>
+      <p>Esses requisitos são necessários para que possa ser realizado o procedimento de importar a máquina virtual pelo gerenciador do Hyper-V.</p>
+      <ul>
+        <li>Executar o procedimento para otimizar o armazenamento da máquina virtual <a href="../hyper-v/manutencao-armazenamento.html" class="nav-back">Manutenção e Otimização de Armazenamento</a></li>
+      </ul>
+    </div>
+
+    <div 
+    class="step">
+      <h3>Exportar Máquina Virtual</h3>
+      <span class="step-subtitle">Exportar VM conforme funcionalidade do gerenciador</span>
+      <p>Estes passo garante que a máquina virtual seja exportada de modo a não corromper arquivos.</p>
+      <ul>
+        <li>No Gerenciador do Hyper-V, Pressionar com o botão direito sobre a máquina virtual que será exportada e selecionar a opção <strong>Exportar..</strong></li>
+        <li>Especifique o local onde se deseja salvar os arquivos selecionando a opção <strong>Procurar</strong></li>
+        <li>Após selecionar o local selcione a opção <strong>Exportar</strong>, acompanhe o processo terminar na coluna <strong>Status</strong> da máquina virtual.</li>
+        <li>Depois de finalizado o processo de exportar, compactar a pasta gerada e armazenar o arquivo compactado, a pasta sem estar compactada pode ser excluída. <strong>O processo de compactação diminuí consideravelmente o tamanho da pasta!</strong></li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <h3>Importar Máquina Virtual</h3>
+      <span class="step-subtitle">Importar VM conforme funcionalidade do gerenciador</span>
+      <p>O procedimento garante que a máquina virtual seja criada com base em um cópia e não corrompa nenhum arquivo.</p>
+      <ul>
+        <li>No gerenciador do Hyper-V selecionar <strong>Ações > Importar Máquina Virtual</strong>, na primeira tela que aparecer <strog>Antes de Começar</strog> pressionar em <strong>Avançar</strong></li>
+        <li>Na opção <strong>Localizar Pasta</strong> pressionar em <strong>Procurar...</strong> e selecionar a pasta de uma máquina virtual que foi exportada pelo gerenciador. <strog>Obs: Não pode ser a pasta compactada, é preciso descompactar antes!</strog></li>
+        <li>Após selecionar a pasta pressionar em <strog>Avançar</strog> e vai aparecer o nome da máquina virtual já selecionada na opção <strong>Selecionar Máquina Virtual</strong>, pressionar em <strong>Avançar ></strong>.</li>
+        <li>Na opção <strong>Escolher Tipo de Importação</strong> selecionar a opção <strong>Copiar a máquina virtual (criar uma nova ID exclusiva)</strong> e pressionar em <strong>Avançar ></strong>.</li>
+        <li>Em <strong>Escolher Destino</strong> selecionar a opção <strong>Armazenar a máquina virtual em outro local</strong>, e preencher com o mesmo caminho os três campos de diretório, exemplo: <em>C:\Hyper-V\Window_11_pro\</em>. E pressionar em <strong>Avançar ></strong></li>
+        <img src="../assets/images/hyper-v/exportar-importar/local_armazenar_vm.png" alt="Tela de seleção de diretório" style="max-width: 100%; border-radius: 8px; border: 1px solid #30363d; margin: 12px 0;">
+        <li>Em <strong>Escolher Pastas de Armazenamento</strong> colocar o mesmo diretório escolhido no passo anterior e definir o nome da pasta padrão para o disco da máquina virtua, exemplo:<em>C:\Hyper-V\Window_11_pro\Virtual Hard Disks\</em>. E pressionar em <strong>Avançar ></strong></li>
+        <img src="../assets/images/hyper-v/exportar-importar/pasta_armazenamento.png" alt="Tela de seleção de diretório" style="max-width: 100%; border-radius: 8px; border: 1px solid #30363d; margin: 12px 0;">
+        <li>Verificar o resumo e pressionar em <strong>Concluir</strong>. Aguardar o gerenciador finalizar a importação.</li>
+        <li>text_list</li>
+        <li>text_list</li>
+      </ul>
+      <pre><code>box_code</code></pre>
+    </div>
+
+    <div class="step-last">
+      <h3>Teste e Validação</h3>
+      <span class="step-subtitle">Opcional</span>
+      <ul>
+        <li>No gerenciador do Hyper-V pressionar como botão direito do mouse sobre a máquina virtual que foi importada e selecionar <strong>Conectar > Iniciar</strong>, esperar o sistema inicializar e testar a nova VM.</li>
+      </ul>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>
