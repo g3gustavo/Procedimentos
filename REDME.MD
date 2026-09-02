@@ -1,7 +1,7 @@
 # 1. O "Contexto Base" para colar no início de um novo chat
 Para que o modelo já responda exatamente dentro do padrão visual do seu projeto (sem ter que reexplicar classes ou design), você pode iniciar a conversa enviando uma introdução direta como esta:
 
-"Tenho um portal de procedimentos no GitHub Pages com tema claro estilo Google/Gemini. Uso as classes .container, .doc-header, .stepper, .step, .step-last, .step-subtitle, .step-img e blocos de código <pre><code>. O arquivo CSS fica em ../css/style.css. Quero criar um novo procedimento..."
+"Tenho um portal de procedimentos no GitHub Pages com tema claro estilo Google/Gemini. Uso as classes .container, .doc-header, .stepper, .step, .step-last, .step-subtitle, .step-img e blocos de código <code></code>. O arquivo CSS fica em ../css/style.css. Quero criar um novo procedimento..."
 
 # 2. As informações necessárias para criar um novo procedimento
 Sempre que você quiser documentar uma rotina nova, você só precisa fornecer:
