@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Integridade de Pontes Retificadoras e IGBTs - Drives Fagor DDS</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Rodapé repetido em todas as páginas impressas -->
+    <div class="print-footer-all">
+        <span><strong>Elaborado por:</strong> Gustavo Vieira Ermelino &bull; e-mail: g3gustavo@gmail.com</span>
+    </div>
+    
+    <div class="container">
+        <!-- Retorno ao Menu e Salvar/Imprimir-->
+        <div class="doc-actions">
+            <a href="../index.html" class="nav-back">← Voltar aos procedimentos</a>
+            <button onclick="window.print()" class="btn-print">🖨️ Salvar em PDF / Imprimir</button>
+        </div>
+                <!-- Cabeçalho do Procedimento -->
+        <header class="doc-header">
+            <h1>Teste de Integridade de Pontes Retificadoras e IGBTs - Drives Fagor DDS</h1>
+            <p class="subtitle">Drive Fagor DDS — Diagnóstico de falhas nos estágios de potência da fonte PS-25B4 e módulos de acionamento AXD/SPD.</p>
+        </header>
+
+        <!-- Stepper / Fluxo de Passos -->
+        <main class="stepper">
+
+            <!-- Passo 1: Segurança Obrigatória -->
+            <div class="step">
+                    <h3>Protocolo de Segurança Obrigatório</h3>
+                    <p class="step-subtitle">A negligência nestas etapas pode resultar em choque elétrico grave, fatalidades ou danos aos instrumentos.</p>
+                    
+                    <div class="alert-box danger">
+                        <ul>
+                            <li><strong>Desenergização e Bloqueio (LOTO):</strong> Seccione a alimentação AC principal e aplique dispositivos de bloqueio físico para impedir a reenergização acidental.</li>
+                            <li><strong>Gestão de Tensão Regenerativa (Back-EMF):</strong> Trave mecanicamente o eixo do motor. Motores de ímãs permanentes funcionam como geradores se girados manualmente, reenergizando o barramento DC.</li>
+                            <li><strong>Tempo de Descarga Obrigatório:</strong> Aguarde, no mínimo, <strong>4 MINUTOS</strong> após o desligamento total para descarga dos capacitores internos.</li>
+                            <li><strong>Validação com Multímetro:</strong> Utilize multímetro de categoria <strong>CAT III ou CAT IV</strong> e certifique-se de que a tensão entre <code>L+</code> e <code>L-</code> está <strong>abaixo de 60 Vdc</strong> antes de qualquer intervenção.</li>
+                        </ul>
+                </div>
+            </div>
+
+            <!-- Passo 2: Preparação e Ferramental -->
+            <div class="step">
+                    <h3>Preparação e Ferramental</h3>
+                    <p class="step-subtitle">Garantia de isolamento galvânico e calibração das medições</p>
+                    
+                    <ul>
+                        <li><strong>Verificação do Instrumento:</strong> Ajuste o multímetro na escala de <strong>Teste de Diodo</strong>. Toque uma ponta de prova na outra para confirmar a integridade dos cabos e o bipe de continuidade.</li>
+                        <li><strong>Isolamento do Módulo (Crítico):</strong> Desaperte os parafusos M5/M6 e afaste fisicamente as barras metálicas do barramento DC (DC BUS).
+                            <br><em>Justificativa Técnica:</em> A capacitância em paralelo de outros módulos conectados mascara os resultados do teste de diodo.</li>
+                        <li><strong>Inspeção de Limpeza:</strong> Limpe poeiras e resíduos condutores das superfícies de contato e bornes de potência.</li>
+                    </ul>
+            </div>
+
+            <!-- Passo 3: Curto-Circuito Global do Barramento -->
+            <div class="step">
+                    <h3>Teste Preliminar: Curto-Circuito Global do Barramento</h3>
+                    <p class="step-subtitle">Identificação prévia de colapso direto no barramento DC</p>
+                    
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ponto de Teste (Ponta Vermelha)</th>
+                                    <th>Ponto de Teste (Ponta Preta)</th>
+                                    <th>Resultado Esperado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Borne Barramento (<code>L+</code>)</td>
+                                    <td>Borne Barramento (<code>L-</code>)</td>
+                                    <td>Sem bipe / Alta Resistência</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="callout warning">
+                        <p><strong>Atenção:</strong> Se houver bipe contínuo neste ponto, a unidade está em curto-circuito interno crítico. Interrompa o procedimento e separe o módulo para manutenção/substituição.</p>
+                    </div>
+            </div>
+
+            <!-- Passo 4: Fonte PS-25B4 -->
+            <div class="step">
+                    <h3>Checklist de Teste: Fonte de Alimentação (Power Supply)</h3>
+                    <p class="step-subtitle">Validação da ponte retificadora de entrada trifásica</p>
+                    
+                    <p>Realize as medições repetindo individualmente para cada uma das fases de entrada (<strong>L1, L2 e L3</strong>):</p>
+                    
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ponto de Teste (Ponta Vermelha)</th>
+                                    <th>Ponto de Teste (Ponta Preta)</th>
+                                    <th>Resultado Esperado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Fase de Entrada (<code>L1</code>, <code>L2</code> ou <code>L3</code>)</td>
+                                    <td>Borne Barramento (<code>L+</code>)</td>
+                                    <td>Queda de tensão (0,3V - 0,9V)</td>
+                                </tr>
+                                <tr>
+                                    <td>Borne Barramento (<code>L+</code>)</td>
+                                    <td>Fase de Entrada (<code>L1</code>, <code>L2</code> ou <code>L3</code>)</td>
+                                    <td>"OL" (Circuito Aberto)</td>
+                                </tr>
+                                <tr>
+                                    <td>Borne Barramento (<code>L-</code>)</td>
+                                    <td>Fase de Entrada (<code>L1</code>, <code>L2</code> ou <code>L3</code>)</td>
+                                    <td>Queda de tensão (0,3V - 0,9V)</td>
+                                </tr>
+                                <tr>
+                                    <td>Fase de Entrada (<code>L1</code>, <code>L2</code> ou <code>L3</code>)</td>
+                                    <td>Borne Barramento (<code>L-</code>)</td>
+                                    <td>"OL" (Circuito Aberto)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+
+            <!-- Passo 5: Módulos AXD e SPD -->
+            <div class="step">
+                    <h3>Checklist de Teste: Módulos de Drive (AXD e SPD)</h3>
+                    <p class="step-subtitle">Medição dos diodos de roda livre integrados aos IGBTs nos terminais de potência</p>
+                    
+                    <p><em>Nota: As medições devem ser executadas exclusivamente nos bornes de saída do motor (<strong>U, V, W</strong>).</em></p>
+
+                    <h3>Seção Ponte Superior (IGBTs)</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ponto de Teste (Ponta Vermelha)</th>
+                                    <th>Ponto de Teste (Ponta Preta)</th>
+                                    <th>Resultado Esperado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Saída Motor (<code>U</code>, <code>V</code> ou <code>W</code>)</td>
+                                    <td>Borne Barramento (<code>L+</code>)</td>
+                                    <td>Queda de tensão (0,3V - 0,9V)</td>
+                                </tr>
+                                <tr>
+                                    <td>Borne Barramento (<code>L+</code>)</td>
+                                    <td>Saída Motor (<code>U</code>, <code>V</code> ou <code>W</code>)</td>
+                                    <td>"OL" (Circuito Aberto)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3>Seção Ponte Inferior (IGBTs)</h3>
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Ponto de Teste (Ponta Vermelha)</th>
+                                    <th>Ponto de Teste (Ponta Preta)</th>
+                                    <th>Resultado Esperado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Borne Barramento (<code>L-</code>)</td>
+                                    <td>Saída Motor (<code>U</code>, <code>V</code> ou <code>W</code>)</td>
+                                    <td>Queda de tensão (0,3V - 0,9V)</td>
+                                </tr>
+                                <tr>
+                                    <td>Saída Motor (<code>U</code>, <code>V</code> ou <code>W</code>)</td>
+                                    <td>Borne Barramento (<code>L-</code>)</td>
+                                    <td>"OL" (Circuito Aberto)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+
+            <!-- Passo 6: Critérios de Interpretação -->
+            <div class="step">
+                    <h3>Critérios de Interpretação e Diagnóstico</h3>
+                    <p class="step-subtitle">Análise de simetria e desvios de condução</p>
+                    
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Valor Lido no Multímetro</th>
+                                    <th>Diagnóstico Técnico</th>
+                                    <th>Ação Necessária</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>0,3 V a 0,9 V</strong></td>
+                                    <td>Normal. Verificar simetria entre fases (desvio máximo permitido de <strong>0,05 V</strong>).</td>
+                                    <td>Prosseguir se houver simetria entre U, V e W.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>"OL" (Overload)</strong></td>
+                                    <td>Circuito Aberto ou Polarização Reversa Correta.</td>
+                                    <td>Normal, conforme as etapas do checklist.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>0 V ou Bipe Contínuo</strong></td>
+                                    <td>Curto-circuito interno (Falha Crítica).</td>
+                                    <td>Identificar como "DEFEITUOSO" e retirar para bancada.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p class="info-note"><em>Em caso de falha confirmada, consulte <strong>Hardware Manual Drive DDS Ref 2301 - Seção 9.11</strong> (Reparo e análise de eventos perigosos).</em></p>
+            </div>
+
+            <!-- Passo 7: Remontagem (Último passo com classe .step-last) -->
+            <div class="step step-last">
+                    <h3>Remontagem e Finalização Operacional</h3>
+                    <p class="step-subtitle">Fechamento, torqueamento e retorno seguro da unidade</p>
+                    
+                    <ul>
+                        <li><strong>Reconexão do Barramento:</strong> Reposicione as barras metálicas do DC BUS sem folgas ou desalinhamentos.</li>
+                        <li><strong>Fixação e Torque (Obrigatório):</strong> Utilize chave dinamométrica para o aperto dos parafusos M5/M6:
+                            <pre><code>Torque especificado: 2,3 N·m a 2,8 N·m</code></pre>
+                            <em>(Evita sobreaquecimento por efeito Joule e espanamento de roscas).</em>
+                        </li>
+                        <li><strong>Inspeção Visual:</strong> Certifique-se de que não ficaram arruelas, ferramentas ou limalhas metálicas dentro das grelhas de ventilação.</li>
+                        <li><strong>Identificação (Tagging):</strong> Módulos reprovados devem ser imediatamente etiquetados como <code>FAULTY / COM DEFEITO</code>.</li>
+                        <li><strong>Energização:</strong> Remova as travas LOTO e execute a rotina de partida conforme sequência descrita no manual de hardware Fagor.</li>
+                    </ul>
+            </div>
+
+        </main> <!-- /.stepper -->
+    </div> <!-- /.container -->
+
+</body>
+</html>

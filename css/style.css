@@ -184,3 +184,214 @@ p code, li code {
   margin: 14px 0;
   display: block;
 }
+/* =======================================================
+   TABELAS TÉCNICAS (ESTILO DASHBOARD / DOCS)
+   ======================================================= */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  margin: 16px 0 20px 0;
+  border-radius: 8px;
+  border: 1px solid #dce2ea;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+  background-color: #ffffff;
+}
+
+thead tr {
+  background-color: #1e2b3e; /* Azul marinho escuro dos exemplos */
+  color: #ffffff;
+}
+
+th {
+  padding: 12px 16px;
+  font-weight: 600;
+  font-size: 13.5px;
+  letter-spacing: 0.2px;
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+th:last-child {
+  border-right: none;
+}
+
+td {
+  padding: 12px 16px;
+  color: #2c3338;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #eef2f6;
+  line-height: 1.5;
+  vertical-align: middle;
+}
+
+td:last-child {
+  border-right: none;
+}
+
+/* Linhas zebradas suaves */
+tbody tr:nth-child(even) {
+  background-color: #f8fafc;
+}
+
+tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+/* Alertas e avisos usados na página */
+.alert-box.danger {
+  background-color: #fef2f2;
+  border-left: 4px solid #dc2626;
+  border-radius: 8px;
+  padding: 12px 18px;
+  margin: 14px 0;
+}
+
+.alert-box.danger ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.callout.warning {
+  background-color: #fffbeb;
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 14px 0;
+}
+
+.callout.warning p {
+  margin: 0;
+  color: #92400e;
+}
+
+.info-note {
+  font-size: 13.5px;
+  color: #475569;
+  background-color: #f8fafc;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 3px solid #64748b;
+  margin-top: 10px;
+}
+/* =======================================================
+   BARRA DE AÇÕES (PRINT / PDF / VOLTAR)
+   ======================================================= */
+/* Barra de ações do topo */
+.doc-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* Botão de impressão estilo Google */
+.btn-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f1f3f4;
+  color: #1f1f1f;
+  border: 1px solid #dadce0;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-print:hover {
+  background-color: #e8eaed;
+}
+
+/* =======================================================
+   REGRAS EXCLUSIVAS PARA IMPRESSÃO / SALVAR PDF
+   ======================================================= */
+@media print {
+  body {
+    background-color: #ffffff;
+    padding: 0;
+  }
+
+  .container {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    max-width: 96%;
+  }
+
+  /* Oculta os botões para não saírem na folha/PDF */
+  .doc-actions,
+  .nav-back,
+  .btn-print {
+    display: none !important;
+  }
+
+  /* Evita que blocos importantes quebrem no meio da página */
+  .step, .table-responsive, pre {
+    page-break-inside: avoid;
+  }
+  /* Força o navegador a renderizar todas as cores de fundo e bordas */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Garante especificamente o azul marinho do cabeçalho da tabela */
+  thead tr {
+    background-color: #1e2b3e !important;
+    color: #ffffff !important;
+  }
+
+  /* Mantém as zebras das linhas pares */
+  tbody tr:nth-child(even) {
+    background-color: #f8fafc !important;
+  }
+
+  /* Mantém o fundo dos blocos de código */
+  pre {
+    background-color: #f0f4f9 !important;
+    border-color: #d3e3fd !important;
+  }
+}
+/* =======================================================
+    RODAPÉ FIXO PARA IMPRESSÃO / PDF
+   ======================================================= */
+/* Oculta o rodapé durante o uso normal da página web */
+.print-footer-all {
+  display: none;
+}
+
+@media print {
+  /* Reserva espaço na parte inferior de cada folha para o texto não sobrepor */
+  @page {
+    margin-top: 15mm;
+    margin-bottom: 20mm;
+    margin-left: 15mm;
+    margin-right: 15mm;
+  }
+
+  /* Faz o navegador carimbar o elemento no rodapé de todas as páginas geradas */
+  .print-footer-all {
+    display: block !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: #444746;
+    padding-top: 6px;
+    border-top: 1px solid #dce2ea;
+    background-color: #ffffff;
+  }
+}
