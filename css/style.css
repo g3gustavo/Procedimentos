@@ -323,7 +323,7 @@ tbody tr:hover {
     border: none;
     box-shadow: none;
     padding: 0;
-    max-width: 96%;
+    max-width: 90%;
   }
 
   /* Oculta os botões para não saírem na folha/PDF */
@@ -332,6 +332,7 @@ tbody tr:hover {
   .btn-print {
     display: none !important;
   }
+
 
   /* Evita que blocos importantes quebrem no meio da página */
   .step, .table-responsive, pre {

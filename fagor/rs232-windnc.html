@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comunicação RS-232 &amp; WinDNC - CNC Fagor</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="print-footer-all"><span><strong>Elaborado por:</strong> Gustavo Vieira Ermelino &bull; e-mail: g3gustavo@gmail.com</span></div>
+
+    <div class="container">
+        <div class="doc-actions">
+            <a href="../index.html" class="nav-back">← Voltar aos procedimentos</a>
+            <button onclick="window.print()" class="btn-print">🖨️ Salvar em PDF / Imprimir</button>
+        </div>
+
+        <header class="doc-header">
+            <h1>Comunicação RS-232 &amp; WinDNC - CNC Fagor</h1>
+            <p class="subtitle">Transferência de Programas de Usinagem para o CNC Fagor 8055</p>
+        </header>
+
+        <div class="alert-box danger">
+            <strong>REQUISITO CRÍTICO DE SEGURANÇA:</strong> O CNC e o PC devem estar obrigatoriamente desligados ao conectar ou desconectar o cabo de comunicação na porta traseira <code>X3</code> do CNC. A desconexão com os equipamentos ligados pode queimar as portas seriais, mesmo o Fagor possuindo proteção por isolamento galvânico.
+        </div>
+
+        <main class="stepper">
+            <div class="step">
+                <h3>1. Arquitetura Física do Cabo Serial RS-232C (Null-Modem)</h3>
+                <p class="step-subtitle">Pinagem física, pontes lógicas de controle e requisitos de isolamento galvânico</p>
+                <p>A conexão física confiável exige um cabo blindado com comprimento máximo recomendado de 15 metros para evitar atenuação capacitiva e ruídos eletromagnéticos de motores. A porta física padrão na CPU do CNC Fagor 8055 T é o conector <code>X3</code> (terminal SUB-D 9 pinos macho), com isolamento galvânico por optoacopladores que previne que laços de terra (ground loops) danifiquem a placa central.</p>
+                <p>Para dispensar o controle de fluxo físico (hardware handshake), adota-se uma topologia de cabo Null-Modem personalizado com jumpers soldados diretamente nos conectores, delegando o controle de fluxo para software (<code>XON/XOFF</code>):</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Pino no PC (DB9 Fêmea)</th>
+                                <th>Pino no CNC Fagor (X3 - DB9 Macho)</th>
+                                <th>Função Lógica / Sentido do Sinal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pino 2 (RxD - Recepção)</td>
+                                <td>Pino 2 (TxD - Transmissão)</td>
+                                <td>Transmissão cruzada: Dado flui do CNC para o PC.</td>
+                            </tr>
+                            <tr>
+                                <td>Pino 3 (TxD - Transmissão)</td>
+                                <td>Pino 3 (RxD - Recepção)</td>
+                                <td>Recepção cruzada: Dado flui do PC para o CNC.</td>
+                            </tr>
+                            <tr>
+                                <td>Pino 5 (Signal Ground)</td>
+                                <td>Pino 7 (Ground ISO)*</td>
+                                <td>Aterramento lógico. Define a referência de zero volts.</td>
+                            </tr>
+                            <tr>
+                                <td>Ponte Lógica (Lado PC)</td>
+                                <td>Interligar os Pinos 4, 6 e 8</td>
+                                <td>DTR, DSR e CTS unidos para simular presença física.</td>
+                            </tr>
+                            <tr>
+                                <td>Ponte Lógica (Lado CNC)</td>
+                                <td>Interligar os Pinos 5, 6 e 9*</td>
+                                <td>Bridgagem que força o sinal de pronto para receber.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="callout warning">
+                    <strong>OBSERVAÇÃO CRÍTICA:</strong> Note que a referência de terra (<code>Ground ISO</code>) no conector <code>X3</code> do CNC Fagor 8055 T está localizada no <strong>Pino 7</strong> (diferente do padrão de PCs, onde a terra fica no Pino 5). A solda incorreta causará falha de sincronização. Se a rede do PC não compartilhar a mesma terra da máquina, solde a blindagem externa do cabo apenas na carcaça metálica do conector do lado do CNC.
+                </div>
+            </div>
+
+            <div class="step">
+                <h3>2. Parametrização Interna no CNC Fagor 8055 T</h3>
+                <p class="step-subtitle">Ajuste dos parâmetros de máquina da porta serial e protocolo DNC</p>
+                <p>Para que a porta serial receba comandos lógicos, os Parâmetros de Máquina Gerais (Machine Parameters) do CNC devem coincidir rigorosamente com a configuração do computador:</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Parâmetro Fagor</th>
+                                <th>Função do Parâmetro</th>
+                                <th>Valor Recomendado</th>
+                                <th>Justificativa Técnica</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>BAUDRATE (P0)</code></td>
+                                <td>Taxa de transmissão em bps</td>
+                                <td><code>7</code> (9600) ou <code>11</code> (115200)</td>
+                                <td>Velocidade estável. Utilize 9600 para placas EPROM mais antigas ou cabos longos, e 115200 para CPUs modernas.</td>
+                            </tr>
+                            <tr>
+                                <td><code>NBITSCHR (P1)</code></td>
+                                <td>Comprimento da palavra de dados</td>
+                                <td><code>1</code> (8 bits de dados)</td>
+                                <td>Indispensável para o suporte total de caracteres ASCII estendidos e códigos especiais de CAM.</td>
+                            </tr>
+                            <tr>
+                                <td><code>PARITY (P2)</code></td>
+                                <td>Detecção de erro simples</td>
+                                <td><code>0</code> (Sem Paridade)</td>
+                                <td>Evita overhead de processamento desnecessário. Integridade garantida pela blindagem física do cabo.</td>
+                            </tr>
+                            <tr>
+                                <td><code>STOPBITS (P3)</code></td>
+                                <td>Período de repouso no fim do caractere</td>
+                                <td><code>0</code> (1 bit de parada)</td>
+                                <td>Marca de fechamento de palavra síncrona padrão para UARTs industriais Fagor.</td>
+                            </tr>
+                            <tr>
+                                <td><code>PROTOCOL (P4)</code></td>
+                                <td>Protocolo de comunicação</td>
+                                <td><code>1</code> (Protocolo DNC)</td>
+                                <td>Ativa regras estritas de empacotamento e sincronização com o software WinDNC.</td>
+                            </tr>
+                            <tr>
+                                <td><code>PWONDNC (P5)</code></td>
+                                <td>Módulo DNC ativo no boot</td>
+                                <td><code>NO</code> (Inativo no boot)</td>
+                                <td>Evita bloqueios na inicialização. A comunicação é aberta sob demanda via menu de utilidades.</td>
+                            </tr>
+                            <tr>
+                                <td><code>XONXOFF (P10)</code></td>
+                                <td>Controle de fluxo lógico via software</td>
+                                <td><code>ON</code> (Ativado)</td>
+                                <td>Permite que o CNC suspenda e reative a transmissão do PC em tempo real.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="info-note"><strong>Como alterar os parâmetros no teclado do CNC:</strong></p>
+                <ol>
+                    <li>Pressione a tecla de menu principal e acesse o modo <strong>Parâmetros de Máquina</strong>.</li>
+                    <li>Utilize as setas direcionais para navegar até a tabela de parâmetros gerais ou de porta serial.</li>
+                    <li>Posicione o cursor sobre o parâmetro desejado (<code>P0</code>, <code>P1</code>, <code>P2</code>, etc.), digite o novo valor e pressione a tecla <code>ENTER</code>.</li>
+                    <li>Pressione a sequência <code>[SHIFT] + [RESET]</code> ou reinicie o CNC para ativar os novos valores.</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3>3. Parametrização do Computador (Windows &amp; WinDNC)</h3>
+                <p class="step-subtitle">Driver USB-Serial, desativação de buffer FIFO e configuração do servidor WinDNC</p>
+                <p><strong>A. Seleção do Conversor USB-Serial:</strong> É mandatório utilizar adaptadores que incorporem circuitos integrados autênticos das marcas FTDI ou Prolific (com drivers homologados de 64 bits para Windows 10/11). Conversores sem marca geram tensões elétricas deficientes (menores que ±5V), incapazes de acionar os optoacopladores do CNC.</p>
+                <div class="alert-box danger">
+                    <strong>B. Solução Crítica: Desativação dos Buffers FIFO do Windows</strong><br>
+                    O Windows utiliza por padrão buffers FIFO na arquitetura UART 16550. Quando a memória RAM do Fagor enche e envia o sinal <code>XOFF</code> (ASCII 19), o driver do computador ainda descarrega os caracteres já retidos no buffer (cerca de 16 bytes). Esse estouro corrompe a recepção do CNC.
+                </div>
+                <p class="info-note"><strong>Procedimento Corretivo no Windows:</strong></p>
+                <ol>
+                    <li>Clique com o botão direito no menu Iniciar e abra o <strong>Gerenciador de Dispositivos</strong>.</li>
+                    <li>Expanda a seção <strong>Portas (COM e LPT)</strong> e dê um duplo clique na porta em uso (ex: <code>Porta Serial USB COM3</code>).</li>
+                    <li>Acesse a aba <strong>Configurações da Porta</strong> e clique no botão <strong>Avançado...</strong>.</li>
+                    <li>Desmarque a opção <strong>Usar buffers FIFO</strong>. Se o driver não permitir desmarcar, arraste os dois controles deslizantes (Transmissão e Recepção) para o valor mínimo (<code>1 Byte</code>).</li>
+                    <li>Clique em <strong>OK</strong> e reinicie o computador.</li>
+                </ol>
+                <p><strong>C. Configuração do Software WinDNC da Fagor:</strong></p>
+                <ol>
+                    <li>Abra o WinDNC. Acesse o menu de <strong>Configuração (Setup)</strong> e selecione criar uma nova máquina.</li>
+                    <li>Selecione o modelo <code>Fagor 8055</code> (com tipo de conexão serial).</li>
+                    <li>Configure a porta serial com os mesmos dados do CNC:
+                        <ul>
+                            <li><strong>Porta COM:</strong> Identificador do adaptador (ex: <code>COM3</code>).</li>
+                            <li><strong>Baudrate:</strong> <code>9600</code> ou <code>115200</code> (idêntico ao parâmetro <code>P0</code>).</li>
+                            <li><strong>Bits de Dados:</strong> <code>8</code> | <strong>Paridade:</strong> <code>Nenhuma</code> | <strong>Bits de Parada:</strong> <code>1</code>.</li>
+                            <li><strong>Controle de Fluxo:</strong> <code>XON/XOFF (Software)</code>.</li>
+                        </ul>
+                    </li>
+                    <li>Defina a <strong>Pasta de Trabalho (Work Folder)</strong> (ex: <code>C:\Fagor\WinDNC\Work</code>) onde os programas pós-processados pelo software CAM (extensões <code>.PIT</code> ou <code>.NC</code>) ficarão armazenados.</li>
+                </ol>
+            </div>
+
+            <div class="step">
+                <h3>4. Procedimento de Transferência (Passo a Passo no CNC)</h3>
+                <p class="step-subtitle">Navegação remota e importação do programa via terminal do torno</p>
+                <ol>
+                    <li>Certifique-se de que o software WinDNC está aberto no computador com a máquina selecionada e o serviço em estado de escuta passiva ativa (porta serial aberta).</li>
+                    <li>No painel do CNC Fagor 8055 T, pressione a tecla de menu principal para acessar as funções da máquina.</li>
+                    <li>Navegue pelas softkeys inferiores e selecione a opção <strong>Utilidades (Utilities)</strong>.</li>
+                    <li>Pressione a softkey <strong>Diretório (Directory)</strong>. A tela exibirá a listagem da memória RAM local do CNC.</li>
+                    <li>Pressione a softkey <strong>Linha Serial (L. Série / Serial Line)</strong> para orientar a busca ao computador conectado.</li>
+                    <li>Verifique o indicador LED da máquina no WinDNC no PC: ele deve ficar <strong>verde</strong>, confirmando a conexão síncrona.</li>
+                    <li>Pressione a softkey <strong>Mudar Diretório (Change Directory)</strong> no CNC. A tela carregará os arquivos (<code>.PIT</code> ou <code>.NC</code>) contidos na pasta de trabalho do PC.</li>
+                    <li>Utilize as setas direcionais para destacar o programa de usinagem desejado.</li>
+                    <li>Com o programa em destaque, pressione a softkey <strong>Copiar (Copy)</strong>.</li>
+                    <li>Selecione como destino a opção <strong>Memória RAM do CNC</strong>.</li>
+                    <li>Confirme ou altere o número do programa (ex: <code>12345</code>) e pressione <code>ENTER</code>.</li>
+                    <li>Aguarde o preenchimento da barra de progresso. O programa estará carregado e pronto para simulação e usinagem.</li>
+                </ol>
+            </div>
+
+            <div class="step step-last">
+                <h3>5. Diagnóstico de Falhas de Comunicação (Troubleshooting)</h3>
+                <p class="step-subtitle">Mapeamento de erros operacionais, causas raízes e soluções recomendadas</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sintoma / Mensagem de Erro</th>
+                                <th>Causa Provável</th>
+                                <th>Ação Corretiva</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>Erro de Paridade (Parity Error)</code> ou <code>Erro de Enquadramento (Framing Error)</code></td>
+                                <td>Divergência de Baudrate/Stop Bit ou conversor USB instável.</td>
+                                <td>Alinhe o <code>Baudrate (P0)</code> com a configuração do WinDNC. Certifique-se de usar adaptador com chip original FTDI ou Prolific.</td>
+                            </tr>
+                            <tr>
+                                <td><code>Erro de Transmissão</code> com interrupção no meio do arquivo</td>
+                                <td>Estouro de buffer de recepção por falha no controle <code>XON/XOFF</code> (buffers FIFO ativos no Windows).</td>
+                                <td>Desative a opção <strong>Usar buffers FIFO</strong> na porta COM do Windows ou reduza para <code>1 Byte</code>. Certifique-se de que o parâmetro <code>P10</code> do CNC está em <code>ON</code>.</td>
+                            </tr>
+                            <tr>
+                                <td>LED do WinDNC não fica verde / Erro <code>Sem Conexão</code></td>
+                                <td>Cabo rompido, sem jumpers ou terra com soldagem incorreta.</td>
+                                <td>Teste com multímetro: confirme o pino 5 (PC) conectado ao <strong>pino 7 (CNC)</strong>. Valide os jumpers entre pinos 4-6-8 no PC e 5-6-9 no conector Fagor.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
