@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinumerik - Procedimento para o reset das memórias de NC e PLC da CCU e NCU</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="print-footer-all"><span><strong>Elaborado por:</strong> Gustavo Vieira Ermelino &bull; e-mail: g3gustavo@gmail.com</span></div>
+
+    <div class="container">
+        <div class="doc-actions">
+            <a href="../index.html" class="nav-back">← Voltar aos procedimentos</a>
+            <button onclick="window.print()" class="btn-print">🖨️ Salvar em PDF / Imprimir</button>
+        </div>
+
+        <header class="doc-header">
+            <h1>Sinumerik - Procedimento para o reset das memórias de NC e PLC da CCU e NCU</h1>
+            <p class="subtitle">Procedimento para realizar o reset das memórias de NC e PLC da CCU/NCU. Essa sequência apaga todos os dados de configuração do equipamento, levando-o ao estado de fábrica.</p>
+        </header>
+
+        <main class="stepper">
+            <!-- Passo 1 -->
+            <div class="step">
+                <h3>1. Funções e Posições das Chaves Seletores (S3 e S4)</h3>
+                <p class="step-subtitle">Mapeamento operacional das chaves rotativas frontais da CCU/NCU</p>
+
+                <p>As chaves rotativas <code>S3</code> (NCK) e <code>S4</code> (PLC) estão localizadas no painel frontal do módulo CCU/NCU e definem o comportamento de inicialização da memória interna.</p>
+
+                <h4>Chave S3 – Seleção de Modo do NCK (NCK Start-up Switch)</h4>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 120px;">Posição</th>
+                                <th>Função / Significado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>0</code></td>
+                                <td><strong>Modo Normal:</strong> O comando inicializa utilizando os dados salvos na memória SRAM.</td>
+                            </tr>
+                            <tr>
+                                <td><code>1</code></td>
+                                <td><strong>Start-up Mode (Reset NCK):</strong> A memória estática (SRAM) é apagada e os dados padrão de fábrica são carregados.</td>
+                            </tr>
+                            <tr>
+                                <td><code>2 a 7</code></td>
+                                <td>Posições reservadas para diagnósticos.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>Chave S4 – Seleção de Modo do PLC (PLC Start-up Switch)</h4>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 120px;">Posição</th>
+                                <th>Função / Significado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>0</code></td>
+                                <td><strong>PLC-RUN-PROGRAMMING:</strong> Modo de execução do PLC. Permite a edição e transferência de programa via software.</td>
+                            </tr>
+                            <tr>
+                                <td><code>1</code></td>
+                                <td><strong>PLC-RUN:</strong> Modo de execução do PLC com proteção de memória (somente leitura).</td>
+                            </tr>
+                            <tr>
+                                <td><code>2</code></td>
+                                <td><strong>PLC-STOP:</strong> Interrompe a execução do programa do PLC.</td>
+                            </tr>
+                            <tr>
+                                <td><code>3</code></td>
+                                <td><strong>MRES (Module Reset):</strong> Posição de mola utilizada para solicitar o reset geral da memória do PLC.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Passo 2 -->
+            <div class="step">
+                <h3>2. Significado dos LEDs e do Display de 7 Segmentos (H3)</h3>
+                <p class="step-subtitle">Diagnóstico visual de boot e sinalizações de status do sistema</p>
+
+                <h4>Display de 7 Segmentos (H3) – Fases de Inicialização (Boot)</h4>
+                <p>Durante a energização, o display exibe sequencialmente as etapas de carregamento do sistema operacional:</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 120px;">Código H3</th>
+                                <th>Etapa / Descrição do Carregamento</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>1</code></td>
+                                <td>Início do download a partir da memória Flash/cartão PCMCIA.</td>
+                            </tr>
+                            <tr>
+                                <td><code>1.</code> (com ponto)</td>
+                                <td>Indicação do módulo em carregamento.</td>
+                            </tr>
+                            <tr>
+                                <td><code>2</code></td>
+                                <td>Download concluído com sucesso.</td>
+                            </tr>
+                            <tr>
+                                <td><code>3</code></td>
+                                <td>Monitor de depuração inicializado.</td>
+                            </tr>
+                            <tr>
+                                <td><code>4</code></td>
+                                <td>Sistema operacional baixado com sucesso.</td>
+                            </tr>
+                            <tr>
+                                <td><code>5</code></td>
+                                <td>Sistema operacional inicializado.</td>
+                            </tr>
+                            <tr>
+                                <td><code>6</code></td>
+                                <td>Software NCK inicializado e pronto (<code>NCK Ready</code>).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>LEDs de Diagnóstico (H1 / H2)</h4>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 180px;">LED</th>
+                                <th>Condição e Significado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>+5V</code> (Verde)</td>
+                                <td>Tensão interna de +5 VDC alimentada e estabilizada.</td>
+                            </tr>
+                            <tr>
+                                <td><code>PR</code> (PLC-RUN) (Verde)</td>
+                                <td>Indica que o PLC está em modo de execução (RUN).</td>
+                            </tr>
+                            <tr>
+                                <td><code>PS</code> (PLC-STOP) (Vermelho)</td>
+                                <td>Indica que o PLC está parado (STOP).</td>
+                            </tr>
+                            <tr>
+                                <td><code>PF</code> (PLC-Fault / Watchdog) (Vermelho)</td>
+                                <td>Falha de hardware/Watchdog do PLC ou reset geral em andamento.</td>
+                            </tr>
+                            <tr>
+                                <td><code>PFO</code> (PLC-FORCE) (Amarelo)</td>
+                                <td>Sinalização de forçamento de I/O ativo no PLC.</td>
+                            </tr>
+                            <tr>
+                                <td><code>SF</code> (System Fault / SINUMERIK Ready) (Vermelho)</td>
+                                <td>Falha do sistema, erro nos acionamentos ou ausência de parametrização.</td>
+                            </tr>
+                            <tr>
+                                <td><code>CB</code> (Communication Bus) (Amarelo/Vermelho)</td>
+                                <td>Status do barramento de comunicação de campo.</td>
+                            </tr>
+                            <tr>
+                                <td><code>NF</code> (NC Fault / Not Ready) (Vermelho)</td>
+                                <td>Falha do NCK ou núcleo NC não operacional/não pronto.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Passo 3 -->
+            <div class="step">
+                <h3>3. Procedimento Passo a Passo de Reset (NCK e PLC)</h3>
+                <p class="step-subtitle">Execução sequencial de limpeza de SRAM e rotina MRES</p>
+
+                <div class="alert-box danger">
+                    <strong>PERIGO - PERDA TOTAL DE DADOS:</strong> O reset apaga todos os dados de usuário, parâmetros de máquina, tabelas de ferramentas, programas de peça e o bloco de lógica do PLC. Nunca execute esta rotina sem verificar previamente a existência de um backup completo e íntegro do equipamento.
+                </div>
+
+                <p>Fluxograma simplificado da sequência de execução:</p>
+<pre><code>
+
+<div class="fluxo-container">
+  
+  <div class="caixa-texto">1. Passar S3 para "1" e S4 para "2"</div>
+  
+  <div class="traco-vertical"></div>
+  
+  <div class="caixa-texto">2. Ligar Chave Geral / Pressionar S1 </div>
+  
+  <div class="traco-vertical"></div>
+  
+  <div class="caixa-texto">3. Aguardar Display H3 mostrar "6" </div>
+
+  <div class="traco-vertical"></div>
+  
+  <div class="caixa-texto">4. Retornar Chave S3 para "0"  </div>
+
+  <div class="traco-vertical"></div>
+  
+  <div class="caixa-texto">5. Executar sequência MRES na Chave S4 </br> (2 -> 3 por 3s -> 2 -> 3 -> 2 -> 0) </div>
+
+</div>
+
+</code></pre>
+
+                <h4>Etapa A: Reset da Memória do NCK (Dados de NC / SRAM)</h4>
+                <ol>
+                    <li>Com a máquina desligada (ou antes de reiniciar a unidade), passe a chave <code>S3</code> para a posição <code>1</code>.</li>
+                    <li>Mantenha a chave <code>S4</code> na posição <code>2</code> (<code>PLC-STOP</code>).</li>
+                    <li>Ligue a chave geral ou pressione o botão de reset <code>S1</code> localizado no painel frontal do módulo.</li>
+                    <li>Observe o display de 7 segmentos <code>H3</code>: a sequência avançará por <code>1 → 2 → 4 → 5</code> e finalizará fixando o dígito <code>6</code>.</li>
+                    <li>Assim que o dígito <code>6</code> estiver estável no display, retorne imediatamente a chave <code>S3</code> para a posição <code>0</code>.</li>
+                </ol>
+
+                <h4>Etapa B: Reset da Memória do PLC (MRES)</h4>
+                <ol>
+                    <li>Com a chave <code>S4</code> mantida na posição <code>2</code> (STOP), certifique-se de que o LED <code>PS</code> está aceso em vermelho.</li>
+                    <li>Gire a chave <code>S4</code> para a posição de mola <code>3</code> (MRES) e mantenha pressionada por aproximadamente 3 segundos, até que o LED <code>PS</code> apague e reacenda.</li>
+                    <li>Solte a chave de volta à posição <code>2</code> e, no intervalo limite de 3 segundos, aplique a sequência de chaveamento rápido: <code>2</code> → <code>3</code> → <code>2</code>.</li>
+                    <li>O LED <code>PS</code> passará a piscar com frequência de ~2 Hz e se manterá aceso fixo em conjunto com o LED <code>PF</code>, acusando a confirmação do reset geral do PLC.</li>
+                    <li>Com os LEDs <code>PS</code> e <code>PF</code> fixos acesos, gire a chave <code>S4</code> para a posição <code>0</code> (RUN).</li>
+                    <li>Os LEDs <code>PS</code> e <code>PF</code> apagarão e o LED <code>PR</code> (verde) acenderá fixo.</li>
+                </ol>
+
+                <div class="callout warning">
+                    <strong>Atenção aos tempos do MRES:</strong> Caso a sequência <code>2</code> → <code>3</code> → <code>2</code> ultrapasse a janela de 3 segundos após soltar a mola, o procedimento de confirmação será invalidado pela CPU. Se isso ocorrer, posicione <code>S4</code> em <code>2</code> e recomece a Etapa B.
+                </div>
+            </div>
+
+            <!-- Passo 4 (Último Passo) -->
+            <div class="step step-last">
+                <h3>4. Comparativo de Estados da CCU/NCU</h3>
+                <p class="step-subtitle">Validação dos indicadores pós-reset e após restauração do backup</p>
+
+                <h4>Situação A: CCU/NCU Recém-Resetada (Estado de Fábrica / Sem Backup)</h4>
+                <p>Status esperado imediatamente após finalizar o reset de NCK e PLC, antes da inserção do arquivo de restauração:</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 260px;">Indicador</th>
+                                <th>Status Esperado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Display de 7 Segmentos (<code>H3</code>)</td>
+                                <td>Dígito <code>6</code> fixo.</td>
+                            </tr>
+                            <tr>
+                                <td>LED <code>+5V</code></td>
+                                <td>Aceso em Verde.</td>
+                            </tr>
+                            <tr>
+                                <td>LED <code>PR</code> (PLC-RUN)</td>
+                                <td>Aceso em Verde.</td>
+                            </tr>
+                            <tr>
+                                <td>LED <code>SF</code> (System Fault)</td>
+                                <td>Pode acender em Vermelho (comportamento normal no SINUMERIK 810D devido à falta de parametrização dos acionamentos e eixos).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4>Situação B: CCU/NCU OK e Pronta para Operação Normal</h4>
+                <p>Status esperado após a recarga e compilação dos arquivos de backup de NC e lógica do PLC:</p>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 260px;">Indicador</th>
+                                <th>Status Esperado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Display de 7 Segmentos (<code>H3</code>)</td>
+                                <td>Dígito <code>6</code> fixo.</td>
+                            </tr>
+                            <tr>
+                                <td>LED <code>+5V</code></td>
+                                <td>Aceso em Verde.</td>
+                            </tr>
+                            <tr>
+                                <td>LED <code>PR</code> (PLC-RUN)</td>
+                                <td>Aceso em Verde.</td>
+                            </tr>
+                            <tr>
+                                <td>LEDs de Falha (<code>SF</code>, <code>NF</code>, <code>PF</code>, <code>PS</code>)</td>
+                                <td>Todos completamente apagados.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="info-note">O sistema agora está limpo e apto a receber a carga dos arquivos de série de NC e PLC via HMI/PCMCIA ou software de comunicação industrial.</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
