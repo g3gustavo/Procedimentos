@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuste da Posição da Torre no PMM Torno Hyundai SKT - Fanuc 0i-TC</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="print-footer-all"><span><strong>Elaborado por:</strong> Gustavo Vieira Ermelino &bull; e-mail: g3gustavo@gmail.com</span></div>
+    
+    <div class="container">
+        <div class="doc-actions">
+            <a href="../index.html" class="nav-back">← Voltar aos procedimentos</a>
+            <button onclick="window.print()" class="btn-print">🖨️ Salvar em PDF / Imprimir</button>
+        </div>
+        
+        <header class="doc-header">
+            <h1>Ajuste da Posição da Torre no PMM Torno Hyundai SKT - Fanuc 0i-TC</h1>
+            <p class="subtitle">Procedimento para ajuste, alinhamento e gravação da origem da Ferramenta Nº 1 no módulo PMM.</p>
+        </header>
+        
+        <main class="stepper">
+            
+            <div class="step">
+                <h3>Etapa 1: Preparar o PMM para Edição</h3>
+                <p>Pressione a tecla de função <code>[SYSTEM]</code> no painel <code>MDI</code>.</p>
+                <p>Pressione a tecla de extensão de menu <code>[&gt;]</code> no menu de softkeys até visualizar a opção <code>[PMM]</code>.</p>
+                <p>Pressione <code>[PMM]</code>, acesse o menu <code>[SYSTEM]</code> e depois <code>[PARAM]</code> para abrir a tela de parâmetros do escravo/amplificador da torre.</p>
+                <p>Localize o parâmetro do PMM <code>No. 11</code> e altere o bit <code>No. 11#0 = 0</code> (libera a gravação da posição da ferramenta).</p>
+            </div>
+            
+            <div class="step">
+                <h3>Etapa 2: Entrar no Modo de Ajuste e Alinhar a Posição</h3>
+                <p>Selecione o modo <code>MDI</code> no painel de operação.</p>
+                <p>Vá para a tela de Keep Relays do PMC (<code>[SYSTEM]</code> &rarr; <code>[PMC]</code> &rarr; <code>[PMCPRM]</code> &rarr; <code>[KEEPRL]</code>) e altere <code>K5#0 = 1</code>.</p>
+                <div class="callout warning"><strong>Resultado:</strong> A tela exibirá o alarme <strong>AL-75 TURRET ADJUST MODE</strong>.</div>
+                <p>Pressione simultaneamente no painel os três botões para realizar o desgrampeamento (unclamp) forçado da torre:</p>
+                <pre><code>[SPINDLE STOP] + [SELECT] + [FEED HOLD]</code></pre>
+                <p>Com a torre desgrampada, gire o disco da torre manualmente com a mão até alinhar perfeitamente a marca/seta da Ferramenta Nº 1 com a seta no corpo do cabeçote da torre.</p>
+                <p>Pressione o botão <code>[CALL / BZ OFF]</code> no painel para grampear (clamp) a torre.</p>
+                <p>Retorne o Keep Relay para <code>K5#0 = 0</code> na tela do PMC.</p>
+            </div>
+            
+            <div class="step">
+                <h3>Etapa 3: Gravar a Posição no PMM</h3>
+                <p>Retorne à tela de parâmetros do PMM (<code>[SYSTEM]</code> &rarr; <code>[PMM]</code> &rarr; <code>[SYSTEM]</code> &rarr; <code>[PARAM]</code>).</p>
+                <p>Altere o parâmetro de volta para <code>PMM No. 11#0 = 1</code>.</p>
+                <p class="info-note"><strong>Resultado:</strong> O sistema registrará a posição atual e exibirá o alarme <strong>AL-133 POWER UNIT OFF REQUIRE</strong>, indicando que é necessário reiniciar para salvar os dados no amplificador.</p>
+            </div>
+            
+            <div class="step step-last">
+                <h3>Etapa 4: Reiniciar e Finalizar o Setup</h3>
+                <p>Desligue a chave geral da máquina e ligue-a novamente.</p>
+                <p>Ao religar, o CNC exibirá a mensagem de erro de configuração <strong>AL-61 TURRET SET UP ERROR</strong>.</p>
+                <p>Com o parâmetro <code>K5#0</code> já em <code>0</code>, pressione simultaneamente os três botões no painel de operação:</p>
+                <pre><code>[SPINDLE STOP] + [SELECT] + [FEED HOLD]</code></pre>
+                <p>O alarme <strong>AL-61</strong> será removido da tela e a posição de origem da ferramenta nº 1 estará oficialmente gravada e salva no sistema.</p>
+            </div>
+            
+        </main>
+    </div>
+</body>
+</html>

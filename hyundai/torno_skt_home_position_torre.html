@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referenciamento da Torre Torno Hyundai SKT - Fanuc 0i-TC</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="print-footer-all">
+        <span><strong>Elaborado por:</strong> Gustavo Vieira Ermelino &bull; e-mail: g3gustavo@gmail.com</span>
+    </div>
+    
+    <div class="container">
+        <div class="doc-actions">
+            <a href="../index.html" class="nav-back">← Voltar aos procedimentos</a>
+            <button onclick="window.print()" class="btn-print">🖨️ Salvar em PDF / Imprimir</button>
+        </div>
+        
+        <header class="doc-header">
+            <h1>Referenciamento da Torre Torno Hyundai SKT - Fanuc 0i-TC</h1>
+            <p class="subtitle">Procedimento passo a passo para referenciar e ajustar a torre mecânica de ferramentas.</p>
+        </header>
+        
+        <main class="stepper">
+            
+            <div class="step">
+                <h3>1. Habilitar a Escrita de Parâmetros (PARAMETER WRITE ENABLE - PWE)</h3>
+                <p>Selecione o modo <code>MDI</code> no painel de operação ou acione a Parada de Emergência.</p>
+                <p>Pressione a tecla de função <code>[OFFSET SETTING]</code> (ou <code>[SETTING]</code>) no painel do CNC.</p>
+                <p>Pressione a softkey <code>[SETING]</code> para abrir a tela SETTING (HANDY).</p>
+                <p>Posicione o cursor sobre o item <code>PARAMETER WRITE</code>.</p>
+                <p>Digite <code>1</code> e pressione a tecla <code>[INPUT]</code>.</p>
+                <p class="info-note"><strong>Nota:</strong> A tela exibirá o alarme 100 PARAMETER WRITE ENABLE, o que é normal e indica que a edição de parâmetros está liberada.</p>
+            </div>
+            
+            <div class="step">
+                <h3>2. Acessar os Keep Relays do PMC</h3>
+                <p>Pressione a tecla de função <code>[SYSTEM]</code>.</p>
+                <p>Pressione a softkey <code>[PMC]</code> e, em seguida, a softkey <code>[PMCPRM]</code>.</p>
+                <p>Pressione a softkey <code>[KEEPRL]</code> para visualizar a tela de Keep Relays.</p>
+                <p class="info-note"><strong>Se o sistema bloquear a alteração:</strong> Pressione a softkey <code>[SETING]</code> dentro do menu PMC e confirme se <code>PROGRAMMER ENABLE = 1</code> (ou ajuste o Keep Relay <code>K17.1 = 1</code> / <code>K900.1 = 1</code>).</p>
+            </div>
+            
+            <div class="step">
+                <h3>3. Entrar no Modo de Ajuste da Torre (Turret Adjust Mode)</h3>
+                <p>Na tela de Keep Relays, navegue até a linha do parâmetro <code>K05</code> (ou <code>K5</code>).</p>
+                <p>Altere o bit <code>K5#0</code> para <code>1</code> (mude o valor para <code>00000001</code> ou posicione o cursor sobre o último bit à direita e digite <code>1</code> + <code>[INPUT]</code>).</p>
+                <div class="callout warning">O CNC entrará no modo de ajuste e exibirá a mensagem de alarme <strong>AL-75 TURRET ADJUST MODE</strong> (ou 2067 TURRET COMPULSORY UNCLAMP). Se a mensagem AL-61 TURRET SETUP ERROR estiver ativa pode ser que a mensagem AL-75 não apareça.</div>
+            </div>
+            
+            <div class="step">
+                <h3>4. Desgrampar a Torre (Unclamp)</h3>
+                <p>Pressione simultaneamente os três botões no painel de operação:</p>
+                <ul>
+                    <li><code>[SPINDLE STOP]</code> (Parada da Árvore)</li>
+                    <li><code>[SELECT]</code> (Seletor de Modo / Program)</li>
+                    <li><code>[FEED HOLD]</code> (Pausa de Avanço)</li>
+                </ul>
+                <div class="alert-box danger">A torre realizará o desgrampeamento mecânico (Unclamp).</div>
+            </div>
+            
+            <div class="step">
+                <h3>5. Alinhar a Ferramenta Nº 1 Manualmente</h3>
+                <p>Com a torre desgrampada, gire o disco da torre manualmente com a mão.</p>
+                <p>Posicione a Ferramenta Nº 1 alinhando perfeitamente a seta/marcação gravada no disco com a seta do corpo do cabeçote da torre.</p>
+            </div>
+            
+            <div class="step">
+                <h3>6. Grampear a Torre (Clamp) e Salvar a Posição</h3>
+                <p>Pressione o botão <code>[CALL / BZ OFF]</code> no painel de operação.</p>
+                <p>A torre será grampeada mecanicamente (Clamp).</p>
+                <p>O alarme de erro de setup <strong>AL-61</strong> será removido da tela, permanecendo apenas o aviso de modo de ajuste <strong>AL-75</strong>.</p>
+                <p class="info-note"><strong>Opcional de verificação:</strong> Na tela de diagnóstico PMC (<code>[PMCDGN]</code>), confirme se o sinal de chave limite de grampo <code>X0000.7</code> mudou para <code>1</code>.</p>
+            </div>
+            
+            <div class="step">
+                <h3>7. Finalizar o Modo de Ajuste</h3>
+                <p>Retorne à tela de Keep Relays no PMC e altere o parâmetro de volta para <code>K5#0 = 0</code>.</p>
+                <p>A mensagem <strong>AL-75</strong> desaparecerá e todos os alarmes da torre serão eliminados.</p>
+                <p>Pressione novamente a combinação de teclas <code>[SPINDLE STOP]</code> + <code>[SELECT]</code> + <code>[FEED HOLD]</code> para concluir o ciclo de registro.</p>
+            </div>
+            
+            <div class="step step-last">
+                <h3>8. Bloquear a Escrita de Parâmetros</h3>
+                <p>Pressione a tecla de função <code>[OFFSET SETTING]</code>.</p>
+                <p>Na tela SETTING (HANDY), altere <code>PARAMETER WRITE</code> de volta para <code>0</code>.</p>
+                <p>Pressione o botão <code>[RESET]</code> no painel MDI para limpar o alarme <strong>100 PARAMETER WRITE ENABLE</strong>.</p>
+            </div>
+            
+        </main>
+    </div>
+</body>
+</html>
