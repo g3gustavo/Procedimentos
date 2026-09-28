@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simatic - Acessar S7 Memory Card pelo Simatic Manager</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="print-footer-all"><span><strong>Elaborado por:</strong> Gustavo Vieira Ermelino &bull; e-mail: g3gustavo@gmail.com</span></div>
+    
+    <div class="container">
+        <div class="doc-actions">
+            <a href="../index.html" class="nav-back">← Voltar aos procedimentos</a>
+            <button onclick="window.print()" class="btn-print">🖨️ Salvar em PDF / Imprimir</button>
+        </div>
+        
+        <header class="doc-header">
+            <h1>Simatic - Acessar S7 Memory Card pelo Simatic Manager</h1>
+            <p class="subtitle">Procedimento para habilitar a leitura do S7 Memory Card no Simatic Manager.</p>
+        </header>
+
+        <p class="info-note"><strong>Pré-requisitos:</strong> Você precisará do software <code>Simatic Manager</code>, de um Cartão S7 Memory Card e um leitor de cartão S7 (ex: Simatic Field PG M6 com leitor integrado).</p>
+
+        <main class="stepper">
+            <div class="step">
+                <h3>Passo 1</h3>
+                <p class="step-subtitle">Inserção do cartão e verificação de status</p>
+                <p>Insira o cartão S7 no leitor de cartão e abra o software <code>Simatic Manager</code>.</p>
+                <p>Acesse no menu superior o caminho <code>File &gt; S7 Memory Card</code>. Você notará que as opções do cartão estarão desabilitadas.</p>
+                <img class="step-img" src="../assets/images/siemens/open-mmc-card-simatic-manager/s7-memory-card-desativado.PNG" alt="Opções do S7 Memory Card desabilitadas no Simatic Manager">
+            </div>
+
+            <div class="step">
+                <h3>Passo 2</h3>
+                <p class="step-subtitle">Configuração de parâmetros do leitor</p>
+                <p>Feche o <code>Simatic Manager</code> e abra o aplicativo <code>Memory Card Parameter Assignment</code> no seu computador.</p>
+                <img class="step-img" src="../assets/images/siemens/open-mmc-card-simatic-manager/open-memory-card-parameter-assingment.png" alt="Nome e ícone do aplicativo Memory Card Parameter Assignment">
+                <p>Na janela de configuração, marque o check box <code>External Prompt</code> e selecione a opção <code>USB</code> na configuração <code>At the connection</code>. Em seguida, pressione <strong>OK</strong>.</p>
+                <img class="step-img" src="../assets/images/siemens/open-mmc-card-simatic-manager/select-usb.png" alt="Configuração do Memory Card Parameter Assignment com External Prompt e USB selecionados">
+            </div>
+
+            <div class="step step-last">
+                <h3>Passo 3</h3>
+                <p class="step-subtitle">Acesso e leitura dos dados do cartão</p>
+                <p>Abra o software <code>Simatic Manager</code> novamente.</p>
+                <p>Acesse novamente o caminho <code>File &gt; S7 Memory Card &gt; Open</code>. Note que agora as opções estão habilitadas.</p>
+                <img class="step-img" src="../assets/images/siemens/open-mmc-card-simatic-manager/s7-memory-card-ativo.png"" alt="Opções do S7 Memory Card habilitadas após configuração">
+                <p>Ao abrir o cartão, os dados contidos nele serão lidos e exibidos na interface do programa para manipulação.</p>
+                <img class="step-img" src="../assets/images/siemens/open-mmc-card-simatic-manager/conteudo-memory-card.png" alt="Conteúdo de um cartão aberto exibido no Simatic Manager">
+            </div>
+        </main>
+    </div>
+</body>
+</html>
