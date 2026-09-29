@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sinumerik - Confirmação do novo componente de HW na rede Drive Click no 840D sl</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="print-footer-all"><span><strong>Elaborado por:</strong> Gustavo Vieira Ermelino &bull; e-mail: g3gustavo@gmail.com</span></div>
+    
+    <div class="container">
+        <div class="doc-actions">
+            <a href="../index.html" class="nav-back">← Voltar aos procedimentos</a>
+            <button onclick="window.print()" class="btn-print">🖨️ Salvar em PDF / Imprimir</button>
+        </div>
+        
+        <header class="doc-header">
+            <h1>Sinumerik - Confirmação do novo componente de HW na rede Drive Click no 840D sl.</h1>
+            <p class="subtitle">Confirmação ao alterar um componente de HW na rede drive click no comando 840D sl com sinumerik integrate.</p>
+        </header>
+
+        <p class="info-note">Ocorre o alarme <code>27035</code> quando se substitui um componente de hardware na rede drive click.</p>
+        
+        <div class="alert-box danger">
+            <strong>Atenção:</strong> Esse procedimento não resolve quando se substitui dois componentes ao mesmo tempo, pois gera conflito na topologia.
+        </div>
+
+        <main class="stepper">
+            <div class="step">
+                <h3>Passo 1</h3>
+                <p class="step-subtitle">Acesso à Lista de Alarme</p>
+                <p>Pressionar a tecla <code>Menu select</code>, e as softkeys <code>Diagnostico</code> > <code>Lista de Alarme</code>.</p>
+            </div>
+
+            <div class="step">
+                <h3>Passo 2</h3>
+                <p class="step-subtitle">Confirmar Alarmes SI</p>
+                <p>Selecionar a mensagem de alarme <code>27035</code> e pressionar a softkey <code>Confirmar Alarmes SI</code>.</p>
+                <img class="step-img" src="../assets/images/siemens/confirm-new-hw-drive-click/tela-falha.jpg" alt="Tela da lista de alarmes selecionando o alarme 27035">
+            </div>
+
+            <div class="step">
+                <h3>Passo 3</h3>
+                <p class="step-subtitle">Confirmação do Hardware</p>
+                <p>Pressionar em <code>OK</code> para confirmar.</p>
+                <img class="step-img" src="../assets/images/siemens/confirm-new-hw-drive-click/confirmacao.jpg" alt="Tela com a pergunta de confirmação de SI Hardware">
+            </div>
+
+            <div class="step">
+                <h3>Passo 4</h3>
+                <p class="step-subtitle">Autenticação (Senha)</p>
+                <p>Pressionar a tecla <code>Menu select</code>, e as softkeys <code>Colocação em funcionamento</code> > <code>Senha</code>, definir a senha <code>SUNRISE</code> e confirmar em <code>OK</code>.</p>
+            </div>
+
+            <div class="step">
+                <h3>Passo 5</h3>
+                <p class="step-subtitle">Parâmetro de Acionamento p9702</p>
+                <p>Pressionar a softkey <code>dados de máquina</code> > <code>Parâmetros de acionamento</code>, ir até o parâmetro <code>p9702</code> e selecionar a opção <code>[29][1D hex] Confirmação da substituição de hardware em execução</code>, pressionar input para confirmar.</p>
+                <img class="step-img" src="../assets/images/siemens/confirm-new-hw-drive-click/parametro-9702.jpg" alt="Tela com o parâmetro p9702 e a opção 29 selecionada">
+            </div>
+
+            <div class="step">
+                <h3>Passo 6</h3>
+                <p class="step-subtitle">Salvar Drive Object p971</p>
+                <p>Ir até o parâmetro <code>p971</code> e selecionar a opção <code>[1] Salvar drive object</code>, pressionar input para confirmar.</p>
+                <img class="step-img" src="../assets/images/siemens/confirm-new-hw-drive-click/parametro971.jpg" alt="Tela com o parâmetro p971 com a opção 1 selecionada">
+            </div>
+
+            <div class="step">
+                <h3>Passo 7</h3>
+                <p class="step-subtitle">Reset</p>
+                <p>Pressionar a tecla <code>[^]</code> e realizar um <code>RESET[PO]</code>.</p>
+            </div>
+
+            <div class="step step-last">
+                <h3>Passo 8</h3>
+                <p class="step-subtitle">Verificação Final</p>
+                <p>Verificar se o alarme <code>27035</code> saiu da lista de alarmes.</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
